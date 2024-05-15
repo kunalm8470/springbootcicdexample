@@ -35,7 +35,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Copy Private key secret to local file system
-      run: mkdir -p ./home/runner/work/_temp/private_key && echo ${{ secrets.AWS_SSH_PRIVATE_KEY }} > ./home/runner/work/_temp/private_key/id_priv
+      run: mkdir -p ./home/runner/work/_temp/private_key && echo "${{ secrets.AWS_SSH_PRIVATE_KEY }}" > ./home/runner/work/_temp/private_key/id_priv
 
     - name: Deploy to AWS EC2 Instance
       run:  cat ./home/runner/work/_temp/private_key/id_priv
