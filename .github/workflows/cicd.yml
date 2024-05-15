@@ -38,4 +38,4 @@ jobs:
       run: mkdir -p ./home/runner/work/_temp/private_key && echo "${{ secrets.AWS_SSH_PRIVATE_KEY }}" > ./home/runner/work/_temp/private_key/id_priv && echo -e "Host server1\n\tHostName ${{ secrets.AWS_PUBLICIP }}\n\tUser myusername\n\tPort 22\n\tIdentityFile ~/./home/runner/work/_temp/private_key/id_priv" | tee -a ./home/runner/work/_temp/private_key/ssh_config && chmod 600 ./home/runner/work/_temp/private_key/ssh_config
 
     - name: Deploy to AWS EC2 Instance
-      run: scp -i ./home/runner/work/_temp/private_key/id_priv ./target/todolist-0.0.1-SNAPSHOT.jar ec2-user@${{ secrets.AWS_PUBLICIP }}:~/app && ssh -i ./home/runner/work/_temp/private_key/id_priv ec2-user@${{ secrets.AWS_PUBLICIP }} "sudo systemctl restart todolist"
+      run: scp -i ./home/runner/work/_temp/private_key/id_priv ./target/todolist-0.0.1-SNAPSHOT.jar ec2-user@${{ secrets.AWS_PUBLICIP }}:~/app && ssh -i ./home/runner/work/_temp/private_key/id_priv -o UserKnownHostsFile=./home/runner/work/_temp/private_key/ssh_config ec2-user@${{ secrets.AWS_PUBLICIP }} "sudo systemctl restart todolist"
