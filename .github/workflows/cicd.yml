@@ -38,7 +38,7 @@ jobs:
       run: ls -l
 
     - name: Deploy to AWS EC2 Instance
-      run: echo ${{ secrets.AWS_SSH_PRIVATE_KEY }} > /home/runner/.ssh/id_priv
+      run: echo ${{ secrets.AWS_SSH_PRIVATE_KEY }} > ./home/runner/work/_temp/id_priv
 
     - name: Test
-      run: cat /home/runner/.ssh/id_priv
+      run: cat ./home/runner/work/_temp/id_priv
