@@ -36,5 +36,3 @@ jobs:
 
     - name: Deploy to AWS EC2 Instance
       run: scp -i ${{ secrets.AWS_SSH_PRIVATE_KEY }} target/todolist-0.0.1-SNAPSHOT.jar ec2-user@${{ secrets.AWS_PUBLICIP }}:~/app && ssh -i ${{ secrets.AWS_SSH_PRIVATE_KEY }} ec2-user@${{ secrets.AWS_PUBLICIP }} "sudo systemctl restart todolist"
-
-
