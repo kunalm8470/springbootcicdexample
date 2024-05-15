@@ -1,0 +1,42 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
+
+name: Deploy to AWS EC2 Instance
+
+on:
+    workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK 22
+      uses: actions/setup-java@v3
+      with:
+        java-version: '22'
+        distribution: 'corretto'
+        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+        settings-path: ${{ github.workspace }} # location for the settings.xml file
+
+    - name: Install Maven
+      run: sudo apt-get install maven
+    
+    - name: Build SpringBoot Application
+      run:  mvn -B package --file pom.xml
+
+    - name: Setup AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Deploy to AWS EC2 Instance
+      run: |
+      scp -i ${{ secrets.AWS_SSH_PRIVATE_KEY }} target/todolist-0.0.1-SNAPSHOT.jar ec2-user@${{ secrets.AWS_PUBLICIP }}:~/app
+      ssh -i ${{ secrets.AWS_SSH_PRIVATE_KEY }} ec2-user@${{ secrets.AWS_PUBLICIP }} "sudo systemctl restart todolist"
+
+
